@@ -1059,6 +1059,18 @@ local _ClassConfig = {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "Glyph Spray",
                 type = "AA",
                 cond = function(self, aaName)
@@ -1484,6 +1496,7 @@ local _ClassConfig = {
         ['DoAggroRune']   = { DisplayName = "Do Aggro Rune", Category = "Spells and Abilities", Tooltip = "Enable casting the Tank Aggro Rune", Default = true, },
         ['DoStripBuff']   = { DisplayName = "Do Strip Buffs", Category = "Spells and Abilities", Tooltip = "Enable casting buff canceler spells.", Default = true, },
         ['DoChestClick']  = { DisplayName = "Do Chest Click", Category = "Utilities", Tooltip = "Click your chest item", Default = true, },
+        ['DoCharmClick']  = { DisplayName = "Do Charm Click", Category = "Utilities", Tooltip = "Click your charm item", Default = true, },
     },
 }
 

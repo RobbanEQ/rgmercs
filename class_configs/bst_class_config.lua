@@ -931,6 +931,18 @@ return {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "PetSpell",
                 type = "Spell",
                 cond = function(self, spell)
@@ -1500,9 +1512,11 @@ return {
         ['DoAoe']          = { DisplayName = "Do AoE", Category = "Spells and Abilities", Index = 4, Tooltip = "Enable using AoE Claw Ability. --TODO: Add AoE DD Nuke", Default = false, ConfigType = "Advanced", },
         ['DoRunSpeed']     = { DisplayName = "Do Run Speed", Category = "Spells and Abilities", Index = 5, Tooltip = "Do Run Speed Spells/AAs", Default = true, },
         ['DoAvatar']       = { DisplayName = "Do Avatar", Category = "Spells and Abilities", Index = 6, Tooltip = "Buff Group/Pet with Avatar", Default = true, },
-        ['DoChestClick']   = { DisplayName = "Do Chest Click", Category = "Spells and Abilities", Index = 7, Tooltip = "Click your chest item during burns.", Default = true, ConfigType = "Advanced", },
-        ['AggroFeign']     = { DisplayName = "Emergency Feign", Category = "Spells and Abilities", Index = 8, Tooltip = "Use your Feign AA when you have aggro at low health or aggro on a RGMercsNamed/SpawnMaster mob.", Default = true, },
-        ['EmergencyStart'] = { DisplayName = "Emergency HP%", Category = "Spells and Abilities", Index = 9, Tooltip = "Your HP % before we begin to use emergency mitigation abilities.", Default = 50, Min = 1, Max = 100, ConfigType = "Advanced", },
+        ['AggroFeign']     = { DisplayName = "Emergency Feign", Category = "Spells and Abilities", Index = 7, Tooltip = "Use your Feign AA when you have aggro at low health or aggro on a RGMercsNamed/SpawnMaster mob.", Default = true, },
+        ['EmergencyStart'] = { DisplayName = "Emergency HP%", Category = "Spells and Abilities", Index = 8, Tooltip = "Your HP % before we begin to use emergency mitigation abilities.", Default = 50, Min = 1, Max = 100, ConfigType = "Advanced", },
+        -- Clicks
+        ['DoChestClick']   = { DisplayName = "Do Chest Click", Category = "Equipment", Index = 1, Tooltip = "Click your chest item during burns.", Default = true, ConfigType = "Advanced", },
+        ['DoCharmClick']   = { DisplayName = "Do Charm Click", Category = "Equipment", Index = 2, Tooltip = "Click your charm item", Default = true, ConfigType = "Advanced", },
         --['DoCombatFero']    = { DisplayName = "Do Combat Fero", Category = "Combat", Tooltip = "Do Combat Fero", Default = true, }, --commented like the respective entry.
     },
 }

@@ -1104,6 +1104,18 @@ local _ClassConfig = {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "Turn Undead",
                 type = "AA",
                 cond = function(self, aaName, target)
@@ -1361,6 +1373,7 @@ local _ClassConfig = {
         ['DoDruid']         = { DisplayName = "Do Druid", Category = "Spells and Abilities", Tooltip = "Use Spells", Default = false, },
         ['DoCH']            = { DisplayName = "Do CH", Category = "Heals", Tooltip = "Use Spells", Default = false, },
         ['DoSymbol']        = { DisplayName = "Do Symbol", Category = "Heals", Tooltip = "Use Spells", Default = false, },
+        ['DoCharmClick']    = { DisplayName = "Do Charm Click", Category = "Equipment", Tooltip = "Click your charm item", Default = true, },
     }, -- end DefaultConfig
 }
 

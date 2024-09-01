@@ -580,6 +580,18 @@ return {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "Epic",
                 type = "Item",
                 cond = function(self, itemName)
@@ -812,5 +824,6 @@ return {
         ['DichoAxeCount']   = { DisplayName = "Auto Dicho Axe Count", Category = "Abilities", Tooltip = "Enable [X] Dico Summon Axes", Default = 300, Min = 100, Max = 600, },
         ['SummonAxes2']     = { DisplayName = "Summon Axes 2", Category = "Abilities", Tooltip = "Enable Summon Axes 2", Default = true, },
         ['SummonDichoAxes'] = { DisplayName = "Summon Dicho Axes", Category = "Abilities", Tooltip = "Enable Summon Dicho Axes", Default = true, },
+        ['DoCharmClick']    = { DisplayName = "Do Charm Click", Category = "Utilities", Tooltip = "Click your charm item", Default = true, },
     },
 }

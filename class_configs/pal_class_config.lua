@@ -1135,6 +1135,18 @@ return {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "Marr's Gift",
                 type = "AA",
                 cond = function(self, aaName)
@@ -1473,6 +1485,7 @@ return {
         ['TotHealPoint'] = { DisplayName = "ToT HealPoint", Category = "Combat", Tooltip = "HP % before we use Target of Target heals.", Default = 30, Min = 1, Max = 100, },
         ['LayHandsPct']  = { DisplayName = "Use Lay on Hands", Category = "Combat", Tooltip = "HP % before we use Lay on Hands.", Default = 35, Min = 1, Max = 100, },
         ['DoChestClick'] = { DisplayName = "Do Chest Click", Category = "Utilities", Tooltip = "Click your chest item", Default = true, },
+        ['DoCharmClick'] = { DisplayName = "Do Charm Click", Category = "Utilities", Tooltip = "Click your charm item", Default = true, },
         ['DoReverseDS']  = { DisplayName = "Do Reverse DS", Category = "Utilities", Tooltip = "Cast Reverse DS", Default = true, },
         ['SummonArrows'] = { DisplayName = "Summon Arrows", Category = "Utilities", Tooltip = "Enable Summon Arrows", Default = true, },
         ['DoBrells']     = { DisplayName = "Do Brells", Category = "Group Buffs", Tooltip = "Enable Casting Brells", Default = true, },

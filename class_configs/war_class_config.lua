@@ -633,6 +633,18 @@ local _ClassConfig = {
         },
         ['Warrior Buffs'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "groupac",
                 type = "Disc",
                 active_cond = function(self, discSpell)
@@ -702,6 +714,7 @@ local _ClassConfig = {
         ['DoAEHate']     = { DisplayName = "Do AE Hate", Category = "Combat", Tooltip = "Enable AoE Hate (Tank Mode Only)", Default = true, },
         ['DoBandolier']  = { DisplayName = "Use Bandolier", Category = "Equipment", Tooltip = "Enable Swapping of items using the bandolier.", Default = false, },
         ['DoChestClick'] = { DisplayName = "Do Chest Click", Category = "Equipment", Tooltip = "Click your chest item", Default = true, },
+        ['DoCharmClick'] = { DisplayName = "Do Charm Click", Category = "Equipment", Tooltip = "Click your charm item", Default = true, },
         ['DoDefense']    = { DisplayName = "Do Defense", Category = "Combat", Tooltip = "Do Defense", Default = true, },
         ['DoBattleLeap'] = { DisplayName = "Do Battle Leap", Category = "Combat", Tooltip = "Do Battle Leap", Default = true, },
         ['DoSnare']      = { DisplayName = "Use Snares", Category = "Combat", Tooltip = "Enable casting Snare abilities.", Default = true, },

@@ -1292,6 +1292,18 @@ local _ClassConfig = {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "ArrowOpener",
                 type = "Spell",
                 tooltip = Tooltips.ArrowOpener,
@@ -1733,6 +1745,7 @@ local _ClassConfig = {
         ['DoReagentArrow']    = { DisplayName = "Use Reagent Arrow", Category = "Spells and Abilities", Tooltip = "Toggle usage of Spells and Openers that require Reagent arrows.", Default = false, },
         ['DoAgroReducerBuff'] = { DisplayName = "Cast Agro Reducer Buff", Category = "Spells and Abilities", Tooltip = "Use Agro Reduction Buffs.", Default = true, },
         ['HPStopDOT']         = { DisplayName = "Mob HP to stop DoTs", Category = "Spells and Abilities", Tooltip = "Enemy %HP to stop casting dots.", Default = 30, Min = 1, Max = 100, },
+        ['DoCharmClick']      = { DisplayName = "Do Charm Click", Category = "Equipment", Tooltip = "Click your charm item", Default = true, },
     },
 }
 

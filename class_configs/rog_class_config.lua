@@ -345,6 +345,18 @@ return {
         },
         ['DPS'] = {
             {
+                name = mq.TLO.Me.Inventory("Charm").Name(),
+                type = "Item",
+                active_cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return item() and RGMercUtils.TargetHasBuff(item.Spell, mq.TLO.Me)
+                end,
+                cond = function(self)
+                    local item = mq.TLO.Me.Inventory("Charm")
+                    return RGMercUtils.GetSetting('DoCharmClick') and item() and RGMercUtils.SpellStacksOnMe(item.Spell) and item.TimerReady() == 0
+                end,
+            },
+            {
                 name = "Backstab",
                 type = "Ability",
                 cond = function(self, _)
@@ -543,6 +555,7 @@ return {
         ['PoisonClicky']    = { DisplayName = "Poison Clicky", Category = "Poison", Tooltip = "Click the poison summoner you want to use here", Type = "ClickyItem", Default = "", },
         ['PoisonItemCount'] = { DisplayName = "Poison Item Count", Category = "Poison", Tooltip = "Min number of poison before we start summoning more", Default = 3, Min = 1, Max = 50, },
         ['DoChestClick']    = { DisplayName = "Do Chest Click", Category = "Utilities", Tooltip = "Click your chest item", Default = true, },
+        ['DoCharmClick']    = { DisplayName = "Do Charm Click", Category = "Utilities", Tooltip = "Click your charm item", Default = true, },
         ['DoEpic']          = { DisplayName = "Do Epic Click", Category = "Utilities", Tooltip = "Click your epic item", Default = true, },
         ['DoHideSneak']     = { DisplayName = "Do Hide/Sneak Click", Category = "Utilities", Tooltip = "Use Hide/Sneak during Downtime", Default = true, },
     },
