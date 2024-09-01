@@ -126,7 +126,8 @@ local function RGMercsGUI()
         if not RGMercConfig.Globals.Minimized then
             openGUI, shouldDrawGUI = ImGui.Begin(('RGMercs%s###rgmercsui'):format(RGMercConfig.Globals.PauseMain and " [Paused]" or ""), openGUI)
         else
-            openGUI, shouldDrawGUI = ImGui.Begin(('RGMercsMin###rgmercsuiMin'), openGUI, bit32.bor(ImGuiWindowFlags.AlwaysAutoResize, ImGuiWindowFlags.NoResize, ImGuiWindowFlags.NoTitleBar))
+            openGUI, shouldDrawGUI = ImGui.Begin(('RGMercsMin###rgmercsuiMin'), openGUI,
+                bit32.bor(ImGuiWindowFlags.AlwaysAutoResize, ImGuiWindowFlags.NoResize, ImGuiWindowFlags.NoTitleBar))
         end
         ImGui.PushID("##RGMercsUI_" .. RGMercConfig.Globals.CurLoadedChar)
 
@@ -272,24 +273,36 @@ local function RGMercsGUI()
             end
         elseif shouldDrawGUI and RGMercConfig.Globals.Minimized then
             if RGMercConfig.Globals.PauseMain then
-                if ImGui.ImageButton('RGMercsButton',derpImg:GetTextureID(), ImVec2(30, 30),ImVec2(0.0,0.0), ImVec2(1, 1), ImVec4(0,0,0,0),ImVec4(1,0,0,1)) then
+                if ImGui.ImageButton('RGMercsButton', derpImg:GetTextureID(), ImVec2(30, 30), ImVec2(0.0, 0.0), ImVec2(1, 1), ImVec4(0, 0, 0, 0), ImVec4(1, 0, 0, 1)) then
                     RGMercConfig.Globals.Minimized = false
                 end
                 if ImGui.IsItemHovered() then
                     ImGui.SetTooltip("RGMercs is Paused")
                 end
             else
-                if ImGui.ImageButton('RGMercsButton',derpImg:GetTextureID(), ImVec2(30, 30)) then
+                if ImGui.ImageButton('RGMercsButton', derpImg:GetTextureID(), ImVec2(30, 30)) then
                     RGMercConfig.Globals.Minimized = false
                 end
                 if ImGui.IsItemHovered() then
                     ImGui.SetTooltip("RGMercs is Running")
                 end
             end
+            if ImGui.BeginPopupContextWindow() then
+                local pauseLabel = RGMercConfig.Globals.PauseMain and "Resume" or "Pause"
+                if ImGui.MenuItem(pauseLabel) then
+                    RGMercConfig.Globals.PauseMain = not RGMercConfig.Globals.PauseMain
+                end
+                ImGui.EndPopup()
+            end
         end
 
         ImGui.PopID()
         ImGui.PopStyleVar(3)
+        if ImGui.IsWindowFocused(ImGuiFocusedFlags.RootAndChildWindows) then
+            if ImGui.IsKeyPressed(ImGuiKey.Escape) and RGMercUtils.GetSetting("EscapeMinimizes") then
+                RGMercConfig.Globals.Minimized = true
+            end
+        end
         if themeColorPop > 0 then
             ImGui.PopStyleColor(themeColorPop)
         end
@@ -313,9 +326,9 @@ local function RGInit(...)
         "MQ2Nav",
         "MQ2DanNet", })
 
-    unloadedPlugins = RGMercUtils.UnCheckPlugins({ "MQ2Melee", })
+    unloadedPlugins = RGMercUtils.UnCheckPlugins({ "MQ2Melee", "MQ2Twist", })
 
-    local args = { ... }
+    local args = { ..., }
     -- check mini argument before loading other modules so it minimizes as soon as possible.
     if args and #args > 0 then
         RGMercsLogger.log_info("Arguments passed to RGMercs: %s", table.concat(args, ", "))
@@ -330,11 +343,6 @@ local function RGInit(...)
     RGMercModules:ExecAll("Init")
     RGMercConfig.Globals.SubmodulesLoaded = true
     RGMercConfig:UpdateCommandHandlers()
-
-    if not RGMercUtils.GetSetting('DoTwist') then
-        local unloaded = RGMercUtils.UnCheckPlugins({ "MQ2Twist", })
-        if #unloaded == 1 then table.insert(unloadedPlugins, unloaded[1]) end
-    end
 
     local mainAssist = mq.TLO.Target.CleanName() or ""
 
@@ -380,8 +388,8 @@ local function RGInit(...)
         RGMercUtils.DoCmd("/macro end")
     end
 
-    RGMercUtils.PrintGroupMessage("Pausing the CWTN Plugin on this host If it exists! (/%s pause on)",
-        mq.TLO.Me.Class.ShortName())
+    -- RGMercUtils.PrintGroupMessage("Pausing the CWTN Plugin on this host if it exists! (/%s pause on)",
+    --     mq.TLO.Me.Class.ShortName())
     RGMercUtils.DoCmd("/squelch /docommand /%s pause on", mq.TLO.Me.Class.ShortName())
 
     if RGMercUtils.CanUseAA("Companion's Discipline") then
@@ -476,7 +484,8 @@ local function Main()
 
     if mq.TLO.MacroQuest.GameState() ~= "INGAME" then return end
 
-    if RGMercConfig.Globals.CurLoadedChar ~= mq.TLO.Me.DisplayName() then
+    if (RGMercConfig.Globals.CurLoadedChar ~= mq.TLO.Me.DisplayName() or
+            RGMercConfig.Globals.CurLoadedClass ~= mq.TLO.Me.Class.ShortName()) then
         RGMercConfig:LoadSettings()
         RGMercModules:ExecAll("LoadSettings")
     end
@@ -594,7 +603,7 @@ local script_actor = RGMercUtils.Actors.register(function(message)
     if msg.from == RGMercConfig.Globals.CurLoadedChar then return end
     if msg.script ~= RGMercUtils.ScriptName then return end
 
-    RGMercsLogger.log_info("\ayGot Event from(\am%s\ay) module(\at%s\ay) event(\at%s\ay)", msg.from,
+    RGMercsLogger.log_verbose("\ayGot Event from(\am%s\ay) module(\at%s\ay) event(\at%s\ay)", msg.from,
         msg.module,
         msg.event)
 

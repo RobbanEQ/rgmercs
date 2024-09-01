@@ -154,7 +154,7 @@ function Module.New()
 end
 
 function Module:Init()
-    RGMercsLogger.log_info("\agInitializing Core Class Module...")
+    RGMercsLogger.log_debug("\agInitializing Core Class Module...")
     self:LoadSettings()
 
     -- set dynamic names.
@@ -603,7 +603,7 @@ function Module:RunHealRotation()
 end
 
 function Module:RunCureRotation()
-    if (os.clock() - self.TempSettings.CureCheckTimer) < 15 then return end
+    if (os.clock() - self.TempSettings.CureCheckTimer) < RGMercUtils.GetSettings('CureInterval') then return end
 
     self.TempSettings.CureCheckTimer = os.clock()
 
@@ -844,7 +844,7 @@ function Module:HandleBind(cmd, ...)
 end
 
 function Module:Shutdown()
-    RGMercsLogger.log_info("Core Class Module Unloaded.")
+    RGMercsLogger.log_debug("Core Class Module Unloaded.")
 end
 
 return Module
